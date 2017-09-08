@@ -7,6 +7,7 @@ output: html_document
 
 Finding all the Yankees that hit greater than 40 homeruns we could write the following code
 
+
 ```{r warning=FALSE,message=FALSE}
 library(Lahman)
 library(sqldf)
@@ -14,5 +15,19 @@ query<-"SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='NYA' and HR>=40"
 
 sqldf(query)
+```
+
+
+Suppose we wanted to find all the stances where a player had more than 40 homeruns but less than 60 strikeouts
+
+```{r warning=FALSE,message=FALSE}
+library(Lahman)
+library(sqldf)
+
+query<-"SELECT playerID,yearID,teamID,HR,SO FROM Batting
+WHERE HR>40 and SO<60"
+
+sqldf(query)
+
 ```
 
