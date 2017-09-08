@@ -2,24 +2,17 @@
 title: "SQL"
 output: html_document
 ---
+ 
+## Filtering Columns and Rows
 
-# This is a level one header. 
-## This is a level two header.
-### This is a level three header.
+Finding all the Yankees that hit greater than 40 homeruns we could write the following code
 
-For paragraphs, you don't need anthing special. 
+```{r warning=FALSE,message=FALSE}
+library(Lahman)
+library(sqldf)
+query<-"SELECT playerID,teamID,yearID,HR FROM Batting
+WHERE teamID='NYA' and HR>=40"
 
-* item 1
-* item 2 
-* item 3
-* item 4 
+sqldf(query)
+```
 
-column 1 | column 2
-------- | -------
-phillies | National 
-Yankees | American 
-Cubs | National 
-Red Sox | American 
-
-
-<img src="volleyball.jpg" width="300" />
