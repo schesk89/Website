@@ -31,3 +31,14 @@ sqldf(query)
 
 ```
 
+
+With SQL, you can also order the rows in the output.  For example, suppose you wanted to see evrey instance of a player hitting more than 50 homeruns.  But you would like the players with the most homeruns to be at the top of this list.  We would do this in the following way.
+
+```{r}
+query<-"SELECT playerID,yearID,teamID,HR FROM Batting
+WHERE HR>50
+ORDER BY HR DESC"
+
+sqldf(query)
+```
+
