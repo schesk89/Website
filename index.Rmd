@@ -3,7 +3,7 @@ title: "SQL"
 output: html_document
 ---
  
-## Filtering Columns and Rows
+## FILTERING COLUMNS AND ROWS
 In SQL one can filter columns and rows of a selected table. Columns can be filtered using the SELECT command and rows can be filtered using the WHERE command. Following is an example of this using the Lahman baseball database.
 
 Before the tables can be filtered, the Lahman and sqldf packages need to be loaded.
@@ -47,7 +47,7 @@ sqldf(query)
 
 ```
 
-## Ordering Data Outputs
+## ORDERING DATA OUTPUTS
 With SQL, you can also order the rows in the output. To order the information, an ORDER BY clause is used. This will default to ascending order (smallest to largest). To organize in descending order, the DESC command will be placed after the ORDER BY command.
 
 ### Examples 
@@ -78,8 +78,8 @@ sqldf(query)
 ```
 
 
-## Aggregation 
-Aggregation is essentially the "squishing" of all the data into 1 record. It will output the sum of all records. This is done by using the GROUP BY command. When using GROUP BY, one must then specify how the other columns asked for should be grouped.
+## AGGREGATION 
+Aggregation is essentially the "squishing" of all the data into 1 record. It will output the sum of all records. This is done by using the GROUP BY command. When using GROUP BY, one must then specify how the other columns asked for should be grouped. If one wants to continue filtering after they have grouped, they can use the HAVING command, which functions as the filtering WHERE command when used after GROUP BY. ORDER BY can be used in the same way as before, coming at the end of the command list.
 
 ### Examples 
 Question1: Suppose we wanted to find the career homerun totals for Babe Ruth.  We would do this using the following code:
@@ -110,6 +110,44 @@ query<-"SELECT playerID,avg(HR) FROM Batting
 GROUP BY playerID
 HAVING avg(HR)>=30
 ORDER BY avg(HR) DESC"
+
+sqldf(query)
+```
+
+## JOINS
+Joining allows tables to be joined together based on common data to increase the data output options. This is done through the INNER JOIN and ON commands. INNER JOIN indicates which tables are being joined together. ON indicates the common data that the tables will be joined by.
+
+### Examples 
+Question1: Suppose we wanted to find the first and last names along with team, year, and homeruns for Babe Ruth. We would do this using the following code: 
+
+```{r}
+query<-"SELECT nameFirst,nameLast,teamID,yearID
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+WHERE Batting.playerID='ruthba01'"
+
+sqldf(query)
+```
+
+Question2: Suppose we wanted to find all instances of players hitting more than 50 homeruns and incude first and last names, team, year, and homeruns.  We would do this using the following code:
+
+```{r}
+query<-"SELECT nameFirst,nameLast,teamID,yearID,HR
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+WHERE Batting.HR>50
+ORDER BY HR DESC"
+
+sqldf(query)
+```
+
+Question3: Suppose we wanted to find Babe Ruth's homeruns by season and what team. We would do this using the following code: 
+
+```{r}
+query<-"SELECT playerID,name,Batting.yearID,Batting.HR
+FROM Batting INNER JOIN Teams
+ON Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
+WHERE Batting.playerID='ruthba01'"
 
 sqldf(query)
 ```
