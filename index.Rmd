@@ -4,8 +4,13 @@ output: html_document
 ---
  
 ## Filtering Columns and Rows
+In SQL one can filter columns and rows of a selected table. Columns can be filtered using the SELECT command and rows can be filtered using the WHERE command. Following is an example of this using the Lahman baseball database.
 
-Finding all the Yankees that hit greater than 40 homeruns we could write the following code
+Before the tables can be filtered, the Lahman and sqldf packages need to be loaded.
+One can become more selective with the Batting data, using the same filters.  
+
+### Examples 
+Question1: Suppose we wanted to find all the Yankees that hit greater than 40 homeruns.  We could write the following code:
 
 
 ```{r warning=FALSE,message=FALSE}
@@ -18,7 +23,7 @@ sqldf(query)
 ```
 
 
-Suppose we wanted to find all the stances where a player had more than 40 homeruns but less than 60 strikeouts
+Question2: Suppose we wanted to find all the stances where a player had more than 40 homeruns but less than 60 strikeouts. We would do this in the following way:
 
 ```{r warning=FALSE,message=FALSE}
 library(Lahman)
@@ -31,7 +36,7 @@ sqldf(query)
 
 ```
 
-Suppose we wanted to find an instances of Phillies in the the 1970s hitting more than 30 Homeruns.  We would do this in the following way.
+Question3: Suppose we wanted to find an instances of Phillies in the the 1970s hitting more than 30 Homeruns. We would do this in the following way:
 
 ```{r}
 query<-"SELECT playerID,yearID,teamID,HR FROM Batting
@@ -42,8 +47,12 @@ sqldf(query)
 
 ```
 
+## Ordering Data Outputs
+With SQL, you can also order the rows in the output. To order the information, an ORDER BY clause is used. This will default to ascending order (smallest to largest). To organize in descending order, the DESC command will be placed after the ORDER BY command.
 
-With SQL, you can also order the rows in the output.  For example, suppose you wanted to see evrey instance of a player hitting more than 50 homeruns.  But you would like the players with the most homeruns to be at the top of this list.  We would do this in the following way.
+### Examples 
+
+Question1: Suppose you wanted to see evrey instance of a player hitting more than 50 homeruns.  But you would like the players with the most homeruns to be at the top of this list.  We would do this in the following way:
 
 ```{r}
 query<-"SELECT playerID,yearID,teamID,HR FROM Batting
@@ -52,3 +61,56 @@ ORDER BY HR DESC"
 
 sqldf(query)
 ```
+
+
+Suppose we wanted to find all instances of a player striking out less than 10 times, with at least 400 at-bats. We would do this in the following code:
+
+```{r}
+library(Lahman)
+library(sqldf)
+
+query<-"SELECT playerID,teamID,yearID,SO,AB FROM Batting
+WHERE SO<10 and AB>=400
+ORDER BY SO"
+
+sqldf(query)
+
+```
+
+
+## Aggregation 
+Aggregation is essentially the "squishing" of all the data into 1 record. It will output the sum of all records. This is done by using the GROUP BY command. When using GROUP BY, one must then specify how the other columns asked for should be grouped.
+
+### Examples 
+Question1: Suppose we wanted to find the career homerun totals for Babe Ruth.  We would do this using the following code:
+
+```{r}
+query<-"SELECT playerID,sum(HR) FROM Batting
+WHERE playerID='ruthba01'
+GROUP BY playerID"
+
+sqldf(query)
+```
+
+Question2: Suppose we wanted to find career HR totals for all players, but list only those with total of 600 or more. Also we wanted to order them by having greatest total at the top.  We would do this using the following code: 
+
+```{r}
+query<-"SELECT playerID,sum(HR) FROM Batting
+GROUP BY playerID
+HAVING sum(HR)>=600
+ORDER BY sum(HR) DESC"
+
+sqldf(query)
+```
+
+Question3: Suppose we wanted to find what players have the highest average per season homeruns totals and we wanted to list only the average greater than 30 homeruns.  We would do this using the following code:
+
+```{r}
+query<-"SELECT playerID,avg(HR) FROM Batting
+GROUP BY playerID
+HAVING avg(HR)>=30
+ORDER BY avg(HR) DESC"
+
+sqldf(query)
+```
+
