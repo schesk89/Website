@@ -152,3 +152,43 @@ WHERE Batting.playerID='ruthba01'"
 sqldf(query)
 ```
 
+Question4: Suppose we wanted to find Babe Ruth's number of homeruns, the year and the team.  We would do this in the following way:
+
+```{r}
+query<-"SELECT nameFirst,nameLast,name,Batting.yearID,Batting.HR
+FROM (Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID) INNER JOIN Teams 
+ON Batting.teamID=Teams.teamID AND Batting.yearID=teams.yearID
+WHERE Batting.playerID='ruthba01'"
+
+sqldf(query)
+```
+
+Question5: Suppose we wanted to find career homerun totals of all the players, but all those that hit at least 600 homeruns. Order by highest homerun totals at the top and include players first and last names and homerun totals.  We would do this using the following code: 
+
+```{r}
+query<-"SELECT nameFirst,nameLast, sum(HR)
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+GROUP BY Batting.playerID
+HAVING sum(HR)>=600
+ORDER BY sum(HR) DESC"
+
+sqldf(query)
+```
+
+
+Question6: Suppose we wanted to find all the players with first name Bob who averaged more than one million dollars in salary over their career and include last names.  We would do this using the following code: 
+
+```{r}
+query<-"SELECT nameFirst,nameLast,avg(salary)
+FROM Salaries INNER JOIN Master
+ON Salaries.playerID=Master.playerID
+WHERE nameFirst='Bob'
+GROUP BY Salaries.playerID
+HAVING avg(salary)>1000000
+ORDER BY avg(salary)"
+
+sqldf(query)
+```
+
